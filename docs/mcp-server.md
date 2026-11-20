@@ -49,3 +49,13 @@ Proof-of-possession (DPoP) is a possible later hardening feature.
 This repository contains KVMD application code and nginx templates, not the full
 RMQ1 firmware image build tree. The changes must be integrated into the RMQ1
 firmware/package build before they can be installed on the device.
+
+Some RMQ1 firmware builds ship a precompiled, vendor-modified KVMD server rather
+than the matching Python source. For a direct install on such a build, preserve
+the vendor server and import `kvmd.apps.kvmd.mcp_bootstrap` from the KVMD launcher
+before it imports `main`. The hook attaches the MCP API and its lifecycle task
+to the existing server instance. Use it only when the target server exposes the
+standard constructor arguments and the `__apis` / `__subsystems` lists; otherwise
+build the firmware from the matching source. Back up the launcher, web assets,
+and active nginx context before installing, and validate nginx configuration
+before reload.
