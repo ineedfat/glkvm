@@ -860,7 +860,7 @@ class McpApi:
                 "created_at": item["created"],
                 "expires_in": max(0, int(item["expires"] - time.monotonic())),
                 "status": item["status"],
-            } for item in self.__pairings.values()]
+            } for item in self.__pairings.values() if item["status"] == "pending"]
         async with self.__lease_lock:
             lease = None
             if self.__lease:
