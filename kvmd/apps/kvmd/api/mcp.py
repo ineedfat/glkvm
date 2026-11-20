@@ -23,6 +23,7 @@ import ipaddress
 import json
 import os
 import secrets
+import socket
 import stat
 import time
 import uuid
@@ -766,13 +767,16 @@ class McpApi:
         settings = await self.__get_settings()
         if not settings["enabled"]:
             raise UnavailableError("MCP is disabled in KVMD settings")
-        try:
-            peer_ip = ipaddress.ip_address(req.remote or "")
-        except ValueError:
-            raise ForbiddenError("Unable to determine proxy connection")
-        # KVMD is reached through nginx over a Unix socket on this image, so
-        # aiohttp may not expose a peer address for that trusted proxy hop.
-        trusted_proxy = req.remote is None or peer_ip.is_loopback
+        transport = req.transport
+        peer_socket = transport.get_extra_info("socket") if transport else None
+        if peer_socket and peer_socket.family == socket.AF_UNIX:
+            trusted_proxy = True
+        else:
+            try:
+                peer_ip = ipaddress.ip_address(req.remote or "")
+            except ValueError:
+                raise ForbiddenError("Unable to determine proxy connection")
+            trusted_proxy = peer_ip.is_loopback
         forwarded_proto = req.headers.get("X-Forwarded-Proto", "").split(",", 1)[0].strip().lower() if trusted_proxy else ""
         effective_scheme = forwarded_proto or req.scheme
         if effective_scheme != "https":
