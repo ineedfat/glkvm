@@ -1,0 +1,31 @@
+.window#mcp-window(data-show-centered style="width:min(680px, 90vw)")
+	.window-header
+		.window-grab MCP agents
+		.window-buttons
+			button.window-button-original &bull;
+			button.window-button-close #[b &times;]
+	.window-content(style="padding:12px; overflow:auto; max-height:75vh")
+		p
+			| Pair agents without sharing your KVMD password. MCP requests require HTTPS and a trusted client network.
+		p
+			strong Endpoint:
+			code https://rmq1.local/mcp
+		label(for="mcp-enabled") Enable MCP:
+		input#mcp-enabled(type="checkbox")
+		p Trusted network CIDRs (one per line):
+		textarea#mcp-networks(rows="3" style="width:100%")
+		p
+			label(for="mcp-lease-timeout") Lease idle timeout (seconds):
+			input#mcp-lease-timeout(type="number" min="30" max="3600" value="300")
+			| &nbsp;
+			label(for="mcp-max-upload") Maximum image upload (GB):
+			input#mcp-max-upload(type="number" min="1" max="64" value="8")
+		.buttons.buttons-row
+			button#mcp-save Save settings
+			button#mcp-refresh Refresh
+		p#mcp-status(aria-live="polite")
+		h3 Pending agent pairing requests
+		div#mcp-pairings
+		h3 Paired agents
+		div#mcp-agents
+		p#mcp-controller

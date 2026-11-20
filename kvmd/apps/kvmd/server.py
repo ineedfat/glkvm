@@ -109,6 +109,7 @@ from .api.redfish import RedfishApi
 from .api.custom_screen import CustomScreenApi
 from .api.recorder import RecorderApi
 from .api.serial import SerialApi
+from .api.mcp import McpApi
 
 
 # =====
@@ -218,6 +219,7 @@ class KvmdServer(HttpServer):  # pylint: disable=too-many-arguments,too-many-ins
         self.__ap_api = ApApi()
         self.__custom_screen_api = CustomScreenApi()
         self.__recorder_api = RecorderApi(streamer, msd)
+        self.__mcp_api = McpApi(hid, atx, msd, streamer, keymap_path)
         self.__hid_api = HidApi(hid, keymap_path)  # Ugly hack to get keymaps state
         self.__apis: list[object] = [
             self,
@@ -255,6 +257,7 @@ class KvmdServer(HttpServer):  # pylint: disable=too-many-arguments,too-many-ins
             ExportApi(info_manager, atx, user_gpio),
             RedfishApi(info_manager, atx),
             self.__serial_api,
+            self.__mcp_api,
         ]
         if self.__switch is not None:
             self.__apis.append(SwitchApi(self.__switch))
@@ -276,6 +279,7 @@ class KvmdServer(HttpServer):  # pylint: disable=too-many-arguments,too-many-ins
             _Subsystem.make(self.__turn_api, "turn", self.__EV_TURN_STATE),
             _Subsystem.make(self.__recorder_api, "Recorder", self.__EV_RECORDER_STATE),
             _Subsystem.make(self.__serial_api, "Serial", self.__EV_SERIAL_STATE),
+            _Subsystem.make(self.__mcp_api, "MCP controller"),
         ]
         if self.__switch is not None:
             self.__subsystems.append(_Subsystem.make(switch, "Switch", self.__EV_SWITCH_STATE))
