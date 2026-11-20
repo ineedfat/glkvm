@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>GLKVM MCP agents</title>
+	<style>
+		:root { color-scheme: light dark; font: 15px system-ui, sans-serif; }
+		body { margin: 0; background: #111827; color: #f3f4f6; }
+		main { max-width: 850px; margin: 28px auto; padding: 0 18px 36px; }
+		section { margin: 16px 0; padding: 18px; border: 1px solid #374151; border-radius: 10px; background: #1f2937; }
+		h1, h2 { margin-top: 0; }
+		p { line-height: 1.5; }
+		label { display: block; margin: 12px 0 6px; }
+		input, textarea { box-sizing: border-box; max-width: 100%; padding: 8px; border: 1px solid #6b7280; border-radius: 5px; background: #111827; color: inherit; }
+		textarea { width: 100%; }
+		input[type="number"] { width: 120px; }
+		input[type="checkbox"] { width: auto; margin-right: 8px; }
+		button { margin: 4px 8px 4px 0; padding: 8px 12px; border: 0; border-radius: 5px; background: #2563eb; color: white; cursor: pointer; }
+		button.secondary { background: #4b5563; }
+		.row { padding: 10px 0; border-top: 1px solid #374151; }
+		#status { min-height: 1.5em; color: #bfdbfe; }
+		code { overflow-wrap: anywhere; }
+		@media (prefers-color-scheme: light) {
+			body { background: #f3f4f6; color: #111827; }
+			section { background: white; border-color: #d1d5db; }
+			input, textarea { background: white; }
+			.row { border-color: #e5e7eb; }
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<h1>MCP agent access</h1>
+		<p>Manage remote agents for this KVM. Sign in to the device in this browser first. The MCP endpoint is <code>/mcp</code>.</p>
+		<p id="status" role="status" aria-live="polite">Loading settings…</p>
+		<section>
+			<h2>Server settings</h2>
+			<form id="settings-form">
+				<label><input id="enabled" type="checkbox">Enable MCP access</label>
+				<label for="networks">Trusted client network CIDRs (one per line)</label>
+				<textarea id="networks" rows="4" placeholder="10.10.0.0/24"></textarea>
+				<label for="lease-timeout">Controller idle timeout (30–3600 seconds)</label>
+				<input id="lease-timeout" type="number" min="30" max="3600" required>
+				<label for="max-upload">Maximum media image size (1–64 GB)</label>
+				<input id="max-upload" type="number" min="1" max="64" required>
+				<p><button type="submit">Save settings</button><button class="secondary" id="refresh" type="button">Refresh</button></p>
+			</form>
+		</section>
+		<section>
+			<h2>Pending pairing requests</h2>
+			<div id="pairings">None</div>
+		</section>
+		<section>
+			<h2>Paired agents</h2>
+			<div id="agents">None</div>
+			<p id="controller">No active controller.</p>
+		</section>
+	</main>
+	<script type="module" src="./admin.js"></script>
+</body>
+</html>

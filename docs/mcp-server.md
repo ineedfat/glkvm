@@ -10,7 +10,9 @@ the KVMD password or browser session cookie.
 In the authenticated KVM web UI, open **System → MCP agents**. Add the client
 network CIDR (including a VPN subnet when applicable), set the lease idle timeout
 and upload limit, and enable MCP. Only HTTPS requests from a listed network are
-accepted.
+accepted. On GL.iNet firmware that serves its bundled GLweb interface, open
+`https://<device-host>/mcp-ui/` in a browser already signed in to the device;
+the settings page uses the existing KVMD login cookie.
 
 The agent starts pairing by sending `POST /mcp/pair/start` with a JSON body such
 as `{"name":"my-agent"}`. The response includes `pairing_id`, `poll_secret`,
